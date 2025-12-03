@@ -41,7 +41,7 @@ export class ProductService {
   static async getAllCategories(): Promise<Category[]> {
     const db = await getDatabase();
     const categories = await db.collection('categories').find({}).toArray();
-    return categories as Category[];
+    return categories as unknown as Category[];
   }
 
   static async getSubcategoriesByCategory(categoryId: string): Promise<Subcategory[]> {
@@ -49,13 +49,13 @@ export class ProductService {
     const subcategories = await db.collection('subcategories')
       .find({ category_id: categoryId })
       .toArray();
-    return subcategories as Subcategory[];
+    return subcategories as unknown as Subcategory[];
   }
 
   static async getAllSubcategories(): Promise<Subcategory[]> {
     const db = await getDatabase();
     const subcategories = await db.collection('subcategories').find({}).toArray();
-    return subcategories as Subcategory[];
+    return subcategories as unknown as Subcategory[];
   }
 
   static async getAllProducts(): Promise<Product[]> {
@@ -64,7 +64,7 @@ export class ProductService {
       .find({})
       .sort({ created_at: -1 })
       .toArray();
-    return products as Product[];
+    return products as unknown as Product[];
   }
 
   static async getProductsPaginated(
@@ -105,7 +105,7 @@ export class ProductService {
       .toArray();
 
     return {
-      products: products as Product[],
+      products: products as unknown as Product[],
       total,
       page,
       limit,
@@ -181,7 +181,7 @@ export class ProductService {
   static async getProductById(productId: string): Promise<Product | null> {
     const db = await getDatabase();
     const product = await db.collection('products').findOne({ _id: productId });
-    return product as Product | null;
+    return product as unknown as Product | null;
   }
 
   static async updateProduct(productId: string, updateData: Partial<Product>): Promise<void> {
