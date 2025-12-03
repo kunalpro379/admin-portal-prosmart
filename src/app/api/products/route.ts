@@ -2,10 +2,43 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ProductService } from '@/lib/product-service';
 import { CloudinaryService } from '@/lib/cloudinary';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const products = await ProductService.getAllProducts();
-    return NextResponse.json({ success: true, data: products });
+    const { searchParams } = new URL(request.url);
+    
+    // Check if pagination is requested
+    const page = searchParams.get('page');
+    const limit = searchParams.get('limit');
+    
+    if (page && limit) {
+      // Paginated request
+      const pageNum = parseInt(page) || 1;
+      const limitNum = parseInt(limit) || 10;
+      const search = searchParams.get('search') || '';
+      const category_id = searchParams.get('category_id') || '';
+      const subcategory_id = searchParams.get('subcategory_id') || '';
+
+      const result = await ProductService.getProductsPaginated(pageNum, limitNum, {
+        search: search || undefined,
+        category_id: category_id || undefined,
+        subcategory_id: subcategory_id || undefined,
+      });
+
+      return NextResponse.json({ 
+        success: true, 
+        data: result.products,
+        pagination: {
+          total: result.total,
+          page: result.page,
+          limit: result.limit,
+          totalPages: result.totalPages
+        }
+      });
+    } else {
+      // Get all products (for backward compatibility)
+      const products = await ProductService.getAllProducts();
+      return NextResponse.json({ success: true, data: products });
+    }
   } catch (error) {
     console.error('Error fetching products:', error);
     return NextResponse.json(

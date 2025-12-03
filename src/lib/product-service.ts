@@ -1,6 +1,20 @@
 import { getDatabase } from './mongodb';
 import { Product, Category, Subcategory, ProductFormData } from '@/types/product';
 
+interface PaginatedResult {
+  products: Product[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+interface ProductFilters {
+  search?: string;
+  category_id?: string;
+  subcategory_id?: string;
+}
+
 export class ProductService {
   static async getNextProductId(): Promise<string> {
     const db = await getDatabase();
@@ -38,6 +52,12 @@ export class ProductService {
     return subcategories as Subcategory[];
   }
 
+  static async getAllSubcategories(): Promise<Subcategory[]> {
+    const db = await getDatabase();
+    const subcategories = await db.collection('subcategories').find({}).toArray();
+    return subcategories as Subcategory[];
+  }
+
   static async getAllProducts(): Promise<Product[]> {
     const db = await getDatabase();
     const products = await db.collection('products')
@@ -45,6 +65,73 @@ export class ProductService {
       .sort({ created_at: -1 })
       .toArray();
     return products as Product[];
+  }
+
+  static async getProductsPaginated(
+    page: number = 1,
+    limit: number = 10,
+    filters: ProductFilters = {}
+  ): Promise<PaginatedResult> {
+    const db = await getDatabase();
+    const collection = db.collection('products');
+
+    // Build query filter
+    const query: Record<string, unknown> = {};
+
+    if (filters.search) {
+      query.product_name = { $regex: filters.search, $options: 'i' };
+    }
+
+    if (filters.category_id && filters.category_id !== 'all') {
+      query.category_id = filters.category_id;
+    }
+
+    if (filters.subcategory_id && filters.subcategory_id !== 'all') {
+      query.subcategory_id = filters.subcategory_id;
+    }
+
+    // Get total count for pagination
+    const total = await collection.countDocuments(query);
+
+    // Calculate skip
+    const skip = (page - 1) * limit;
+
+    // Get paginated products
+    const products = await collection
+      .find(query)
+      .sort({ created_at: -1 })
+      .skip(skip)
+      .limit(limit)
+      .toArray();
+
+    return {
+      products: products as Product[],
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
+  static async getTotalProductCount(filters: ProductFilters = {}): Promise<number> {
+    const db = await getDatabase();
+    const collection = db.collection('products');
+
+    const query: Record<string, unknown> = {};
+
+    if (filters.search) {
+      query.product_name = { $regex: filters.search, $options: 'i' };
+    }
+
+    if (filters.category_id && filters.category_id !== 'all') {
+      query.category_id = filters.category_id;
+    }
+
+    if (filters.subcategory_id && filters.subcategory_id !== 'all') {
+      query.subcategory_id = filters.subcategory_id;
+    }
+
+    return await collection.countDocuments(query);
   }
 
   static async createProduct(productData: ProductFormData, imageUrls: string[]): Promise<Product> {
