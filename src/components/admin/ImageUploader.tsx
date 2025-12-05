@@ -100,7 +100,7 @@ export const ImageUploader = ({ images, onChange, maxImages = 10 }: ImageUploade
           disabled={images.length >= maxImages}
         />
         <div className="flex flex-col items-center gap-3">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-100 to-emerald-100 flex items-center justify-center">
+          <div className="w-14 h-14 rounded-2xl bg-white border-2 border-teal-500 flex items-center justify-center">
             <Upload className="w-7 h-7 text-teal-600" />
           </div>
           <div>
@@ -142,7 +142,7 @@ export const ImageUploader = ({ images, onChange, maxImages = 10 }: ImageUploade
                   e.stopPropagation();
                   removeImage(index);
                 }}
-                className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute -top-2 -right-2 w-6 h-6 bg-white border-2 border-rose-500 text-rose-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -152,7 +152,7 @@ export const ImageUploader = ({ images, onChange, maxImages = 10 }: ImageUploade
                   e.stopPropagation();
                   changeImage(index);
                 }}
-                className="absolute bottom-1 left-1 right-1 text-xs text-white font-medium bg-slate-900/60 px-2 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity text-center"
+                className="absolute bottom-1 left-1 right-1 text-xs text-slate-700 font-medium bg-white border-2 border-slate-300 px-2 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity text-center"
               >
                 Change
               </button>

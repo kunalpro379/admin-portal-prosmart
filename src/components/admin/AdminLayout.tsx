@@ -49,11 +49,11 @@ export const AdminLayout = ({ children, title }: AdminLayoutProps) => {
   }
 
   return (
-    <div className="flex min-h-screen w-full bg-slate-50">
+    <div className="flex h-screen w-full bg-slate-50 overflow-hidden">
       <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <AdminHeader title={title} onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 p-4 md:p-6 overflow-auto">
+        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
           {children}
         </main>
       </div>

@@ -153,26 +153,26 @@ export class ProductService {
     };
 
     // Insert the product
-    await db.collection('products').insertOne({ _id: productId, ...product });
+    await db.collection('products').insertOne({ _id: productId, ...product } as any);
 
     // Update category product_ids array
     await db.collection('categories').updateOne(
-      { _id: productData.category_id },
+      { _id: productData.category_id } as any,
       {
         $push: { product_ids: productId },
         $inc: { product_count: 1 },
         $set: { updated_at: new Date() }
-      }
+      } as any
     );
 
     // Update subcategory product_ids array
     await db.collection('subcategories').updateOne(
-      { _id: productData.subcategory_id },
+      { _id: productData.subcategory_id } as any,
       {
         $push: { product_ids: productId },
         $inc: { product_count: 1 },
         $set: { updated_at: new Date() }
-      }
+      } as any
     );
 
     return { _id: productId, ...product } as Product;
@@ -180,20 +180,20 @@ export class ProductService {
 
   static async getProductById(productId: string): Promise<Product | null> {
     const db = await getDatabase();
-    const product = await db.collection('products').findOne({ _id: productId });
+    const product = await db.collection('products').findOne({ _id: productId } as any);
     return product as unknown as Product | null;
   }
 
   static async updateProduct(productId: string, updateData: Partial<Product>): Promise<void> {
     const db = await getDatabase();
     await db.collection('products').updateOne(
-      { _id: productId },
+      { _id: productId } as any,
       { 
         $set: { 
           ...updateData, 
           updated_at: new Date() 
         } 
-      }
+      } as any
     );
   }
 
@@ -205,26 +205,26 @@ export class ProductService {
     if (!product) return;
 
     // Remove from product collection
-    await db.collection('products').deleteOne({ _id: productId });
+    await db.collection('products').deleteOne({ _id: productId } as any);
 
     // Remove from category product_ids array
     await db.collection('categories').updateOne(
-      { _id: product.category_id },
+      { _id: product.category_id } as any,
       {
         $pull: { product_ids: productId },
         $inc: { product_count: -1 },
         $set: { updated_at: new Date() }
-      }
+      } as any
     );
 
     // Remove from subcategory product_ids array
     await db.collection('subcategories').updateOne(
-      { _id: product.subcategory_id },
+      { _id: product.subcategory_id } as any,
       {
         $pull: { product_ids: productId },
         $inc: { product_count: -1 },
         $set: { updated_at: new Date() }
-      }
+      } as any
     );
   }
 }

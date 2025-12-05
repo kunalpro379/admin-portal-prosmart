@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { ImageUploader } from '@/components/admin/ImageUploader';
 import { Select } from '@/components/ui/Select';
-import { ArrowLeft, Save, X, Package } from 'lucide-react';
+import { ArrowLeft, Save, X, Package, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Category {
@@ -38,6 +38,7 @@ export default function ProductEditPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFetchingSubcategories, setIsFetchingSubcategories] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [product, setProduct] = useState<Product | null>(null);
@@ -112,6 +113,7 @@ export default function ProductEditPage() {
         return;
       }
 
+      setIsFetchingSubcategories(true);
       try {
         const res = await fetch(`/api/subcategories/${formData.category_id}`);
         const data = await res.json();
@@ -120,6 +122,8 @@ export default function ProductEditPage() {
         }
       } catch (error) {
         console.error('Error fetching subcategories:', error);
+      } finally {
+        setIsFetchingSubcategories(false);
       }
     };
 
@@ -215,7 +219,7 @@ export default function ProductEditPage() {
           <p className="text-slate-500 mb-6">Product not found</p>
           <button
             onClick={() => router.push('/products')}
-            className="h-11 px-6 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-teal-600 hover:to-emerald-600 transition-all shadow-lg shadow-teal-200"
+            className="h-11 px-6 bg-white border-2 border-teal-500 text-teal-600 rounded-xl font-semibold hover:bg-teal-50 hover:border-teal-600 transition-all"
           >
             Back to Products
           </button>
@@ -256,7 +260,7 @@ export default function ProductEditPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="h-10 px-4 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-teal-600 hover:to-emerald-600 transition-all disabled:opacity-50 shadow-lg shadow-teal-200 flex items-center gap-2"
+                className="h-10 px-4 bg-white border-2 border-teal-500 text-teal-600 rounded-xl font-semibold hover:bg-teal-50 hover:border-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 <Save className="w-4 h-4" />
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
@@ -291,7 +295,7 @@ export default function ProductEditPage() {
                     placeholder="Enter product name"
                     value={formData.product_name}
                     onChange={(e) => handleChange('product_name', e.target.value)}
-                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    className="w-full h-11 px-4 rounded-xl border-2 border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 transition-all"
                   />
                 </div>
 
@@ -303,7 +307,7 @@ export default function ProductEditPage() {
                     placeholder="Enter product title"
                     value={formData.product_title}
                     onChange={(e) => handleChange('product_title', e.target.value)}
-                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    className="w-full h-11 px-4 rounded-xl border-2 border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 transition-all"
                   />
                 </div>
 
@@ -324,13 +328,20 @@ export default function ProductEditPage() {
                     <label className="block text-sm font-semibold text-slate-700">
                       Subcategory <span className="text-rose-500">*</span>
                     </label>
-                    <Select
-                      value={formData.subcategory_id}
-                      onValueChange={(v) => handleChange('subcategory_id', v)}
-                      options={subcategoryOptions}
-                      placeholder="Select subcategory"
-                      disabled={!formData.category_id}
-                    />
+                    <div className="relative">
+                      <Select
+                        value={formData.subcategory_id}
+                        onValueChange={(v) => handleChange('subcategory_id', v)}
+                        options={subcategoryOptions}
+                        placeholder={isFetchingSubcategories ? "Loading..." : "Select subcategory"}
+                        disabled={!formData.category_id || isFetchingSubcategories}
+                      />
+                      {isFetchingSubcategories && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -343,7 +354,7 @@ export default function ProductEditPage() {
                     value={formData.product_description}
                     onChange={(e) => handleChange('product_description', e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 resize-none transition-all"
                   />
                 </div>
               </div>
@@ -375,7 +386,7 @@ export default function ProductEditPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 h-11 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-teal-600 hover:to-emerald-600 transition-all disabled:opacity-50 shadow-lg shadow-teal-200"
+            className="flex-1 h-11 bg-white border-2 border-teal-500 text-teal-600 rounded-xl font-semibold hover:bg-teal-50 hover:border-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </button>

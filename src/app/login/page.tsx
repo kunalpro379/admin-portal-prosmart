@@ -85,7 +85,7 @@ export default function LoginPage() {
                   placeholder="Enter username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 transition-all"
                   required
                 />
               </div>
@@ -103,7 +103,7 @@ export default function LoginPage() {
                   placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-12 pl-12 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                  className="w-full h-12 pl-12 pr-4 rounded-xl border-2 border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 transition-all"
                   required
                 />
               </div>
@@ -112,7 +112,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full h-12 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-teal-600 hover:to-emerald-600 transition-all disabled:opacity-50 shadow-lg shadow-teal-200"
+              className="w-full h-12 bg-white border-2 border-teal-500 text-teal-600 rounded-xl font-semibold hover:bg-teal-50 hover:border-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -125,14 +125,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-100">
-            <p className="text-sm text-slate-500 text-center">
-              Demo credentials:{' '}
-              <span className="font-mono bg-teal-50 text-teal-700 px-2 py-1 rounded-lg">admin</span>
-              {' / '}
-              <span className="font-mono bg-teal-50 text-teal-700 px-2 py-1 rounded-lg">admin</span>
-            </p>
-          </div>
         </div>
 
         <p className="text-center text-slate-400 text-sm mt-6">

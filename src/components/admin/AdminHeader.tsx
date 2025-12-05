@@ -44,7 +44,7 @@ export const AdminHeader = ({ title, onMenuClick }: AdminHeaderProps) => {
       <div className="flex items-center gap-2">
         {/* Mobile Add Product Button */}
         <button
-          className="md:hidden p-2 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl hover:from-teal-600 hover:to-emerald-600 transition-all shadow-lg shadow-teal-200"
+          className="md:hidden p-2 bg-white border-2 border-teal-500 text-teal-600 rounded-xl hover:bg-teal-50 hover:border-teal-600 transition-all"
           onClick={() => router.push('/products/new')}
         >
           <Plus className="w-5 h-5" />

@@ -41,14 +41,14 @@ export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
       <aside
         className={cn(
           'fixed md:static inset-y-0 left-0 z-50',
-          'w-72 md:w-64 min-h-screen flex flex-col',
+          'w-72 md:w-64 h-screen flex flex-col',
           'bg-white border-r border-slate-200 shadow-xl md:shadow-none',
           'transform transition-transform duration-300 ease-in-out',
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >
         {/* Logo */}
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-teal-50 to-emerald-50">
+        <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-white">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-xl overflow-hidden ring-2 ring-teal-400 shadow-md">
               <Image
@@ -93,8 +93,8 @@ export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
                       className={cn(
                         'flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200',
                         isActive
-                          ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-white shadow-lg shadow-teal-200'
-                          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-800'
+                          ? 'bg-white border-2 border-teal-500 text-teal-600 font-semibold'
+                          : 'text-slate-600 hover:bg-slate-50 border-2 border-transparent hover:border-slate-200'
                       )}
                     >
                       <item.icon className="w-5 h-5" />
@@ -111,7 +111,7 @@ export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
         <div className="p-4 border-t border-slate-100 bg-white">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-600 hover:bg-rose-50 hover:text-rose-600 transition-all duration-200"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white border-2 border-rose-500 text-rose-600 hover:bg-rose-50 hover:border-rose-600 transition-all duration-200"
           >
             <LogOut className="w-5 h-5" />
             <span className="font-medium">Log out</span>

@@ -183,7 +183,7 @@ export default function ProductNewPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="h-10 px-4 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-teal-600 hover:to-emerald-600 transition-all disabled:opacity-50 shadow-lg shadow-teal-200 flex items-center gap-2"
+                className="h-10 px-4 bg-white border-2 border-teal-500 text-teal-600 rounded-xl font-semibold hover:bg-teal-50 hover:border-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 <Save className="w-4 h-4" />
                 {isSubmitting ? 'Creating...' : 'Add Product'}
@@ -218,7 +218,7 @@ export default function ProductNewPage() {
                     placeholder="Enter product name"
                     value={formData.product_name}
                     onChange={(e) => handleChange('product_name', e.target.value)}
-                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    className="w-full h-11 px-4 rounded-xl border-2 border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 transition-all"
                   />
                 </div>
 
@@ -230,7 +230,7 @@ export default function ProductNewPage() {
                     placeholder="Enter product title"
                     value={formData.product_title}
                     onChange={(e) => handleChange('product_title', e.target.value)}
-                    className="w-full h-11 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    className="w-full h-11 px-4 rounded-xl border-2 border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 transition-all"
                   />
                 </div>
 
@@ -270,7 +270,7 @@ export default function ProductNewPage() {
                     value={formData.product_description}
                     onChange={(e) => handleChange('product_description', e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none transition-all"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 resize-none transition-all"
                   />
                 </div>
               </div>
@@ -302,7 +302,7 @@ export default function ProductNewPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex-1 h-11 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-teal-600 hover:to-emerald-600 transition-all disabled:opacity-50 shadow-lg shadow-teal-200"
+            className="flex-1 h-11 bg-white border-2 border-teal-500 text-teal-600 rounded-xl font-semibold hover:bg-teal-50 hover:border-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Creating...' : 'Add Product'}
           </button>

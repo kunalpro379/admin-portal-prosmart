@@ -58,6 +58,8 @@ export default function ProductListPage() {
     limit: ITEMS_PER_PAGE,
     totalPages: 0
   });
+  const [deletingProductId, setDeletingProductId] = useState<string | null>(null);
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
 
   // Debounce search input
   useEffect(() => {
@@ -132,15 +134,16 @@ export default function ProductListPage() {
     }
   }, [debouncedSearch, categoryFilter, subcategoryFilter]);
 
-  // Fetch products when filters or page changes
-  useEffect(() => {
-    fetchProducts(currentPage);
-  }, [currentPage, fetchProducts]);
-
   // Reset page and fetch when filters change
   useEffect(() => {
     setCurrentPage(1);
+    // Fetch will be triggered by the currentPage change
   }, [debouncedSearch, categoryFilter, subcategoryFilter]);
+
+  // Fetch products when page changes
+  useEffect(() => {
+    fetchProducts(currentPage);
+  }, [currentPage, fetchProducts]);
 
   // Fetch filter subcategories when category changes
   useEffect(() => {
@@ -184,6 +187,7 @@ export default function ProductListPage() {
       return;
     }
 
+    setDeletingProductId(productId);
     try {
       const res = await fetch(`/api/products/${productId}`, {
         method: 'DELETE',
@@ -199,7 +203,14 @@ export default function ProductListPage() {
     } catch (error) {
       console.error('Error deleting product:', error);
       toast.error('Failed to delete product');
+    } finally {
+      setDeletingProductId(null);
     }
+  };
+
+  const handleEdit = (productId: string) => {
+    setEditingProductId(productId);
+    router.push(`/products/${productId}`);
   };
 
   const categoryOptions = [
@@ -234,19 +245,19 @@ export default function ProductListPage() {
     <AdminLayout title="Product List">
       <div className="space-y-4 md:space-y-5">
         {/* Stats Card */}
-        <div className="bg-gradient-to-br from-teal-500 to-emerald-600 rounded-2xl p-4 md:p-6 text-white shadow-lg">
+        <div className="bg-white rounded-2xl border-2 border-teal-500 p-4 md:p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-teal-100 text-sm font-medium">Total Products</p>
-              <p className="text-3xl md:text-4xl font-bold mt-1">{pagination.total}</p>
+              <p className="text-slate-500 text-sm font-medium">Total Products</p>
+              <p className="text-3xl md:text-4xl font-bold mt-1 text-slate-800">{pagination.total}</p>
               {(debouncedSearch || categoryFilter !== 'all' || subcategoryFilter !== 'all') && (
-                <p className="text-teal-100 text-sm mt-1">
+                <p className="text-slate-500 text-sm mt-1">
                   Filtered results
                 </p>
               )}
             </div>
-            <div className="w-14 h-14 md:w-16 md:h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-              <Layers className="w-7 h-7 md:w-8 md:h-8 text-white" />
+            <div className="w-14 h-14 md:w-16 md:h-16 border-2 border-teal-500 rounded-2xl flex items-center justify-center bg-teal-50">
+              <Layers className="w-7 h-7 md:w-8 md:h-8 text-teal-600" />
             </div>
           </div>
         </div>
@@ -260,7 +271,7 @@ export default function ProductListPage() {
               placeholder="Search products..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-11 pl-11 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+              className="w-full h-11 pl-11 pr-4 rounded-xl border-2 border-slate-200 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 transition-all"
             />
           </div>
 
@@ -287,7 +298,7 @@ export default function ProductListPage() {
 
             <button
               onClick={() => router.push('/products/new')}
-              className="h-11 px-5 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl font-semibold hover:from-teal-600 hover:to-emerald-600 transition-all shadow-lg shadow-teal-200 flex items-center justify-center gap-2"
+              className="h-11 px-5 bg-white border-2 border-teal-500 text-teal-600 rounded-xl font-semibold hover:bg-teal-50 hover:border-teal-600 transition-all flex items-center justify-center gap-2"
             >
               <Plus className="w-5 h-5" />
               <span>Add Product</span>
@@ -348,18 +359,28 @@ export default function ProductListPage() {
                     {/* Actions */}
                     <div className="flex flex-col gap-2">
                       <button
-                        onClick={() => router.push(`/products/${product._id}`)}
-                        className="p-2.5 bg-teal-50 text-teal-600 rounded-lg hover:bg-teal-100 transition-colors"
+                        onClick={() => handleEdit(product._id)}
+                        disabled={editingProductId === product._id || deletingProductId === product._id}
+                        className="p-2.5 bg-white border-2 border-teal-500 text-teal-600 rounded-lg hover:bg-teal-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                         title="Edit"
                       >
-                        <Edit className="w-4 h-4" />
+                        {editingProductId === product._id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Edit className="w-4 h-4" />
+                        )}
                       </button>
                       <button
                         onClick={() => handleDelete(product._id, product.product_name)}
-                        className="p-2.5 bg-rose-50 text-rose-500 rounded-lg hover:bg-rose-100 transition-colors"
+                        disabled={deletingProductId === product._id || editingProductId === product._id}
+                        className="p-2.5 bg-white border-2 border-rose-500 text-rose-600 rounded-lg hover:bg-rose-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                         title="Delete"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        {deletingProductId === product._id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
                       </button>
                     </div>
                   </div>
@@ -417,18 +438,28 @@ export default function ProductListPage() {
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-end gap-2">
                           <button
-                            onClick={() => router.push(`/products/${product._id}`)}
-                            className="p-2.5 bg-teal-50 text-teal-600 rounded-lg hover:bg-teal-100 transition-colors"
+                            onClick={() => handleEdit(product._id)}
+                            disabled={editingProductId === product._id || deletingProductId === product._id}
+                            className="p-2.5 bg-white border-2 border-teal-500 text-teal-600 rounded-lg hover:bg-teal-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                             title="Edit"
                           >
-                            <Edit className="w-4 h-4" />
+                            {editingProductId === product._id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Edit className="w-4 h-4" />
+                            )}
                           </button>
                           <button
                             onClick={() => handleDelete(product._id, product.product_name)}
-                            className="p-2.5 bg-rose-50 text-rose-500 rounded-lg hover:bg-rose-100 transition-colors"
+                            disabled={deletingProductId === product._id || editingProductId === product._id}
+                            className="p-2.5 bg-white border-2 border-rose-500 text-rose-600 rounded-lg hover:bg-rose-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                             title="Delete"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            {deletingProductId === product._id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
                           </button>
                         </div>
                       </td>
@@ -487,8 +518,8 @@ export default function ProductListPage() {
                         onClick={() => goToPage(pageNum)}
                         className={`w-10 h-10 rounded-xl font-medium transition-all ${
                           currentPage === pageNum
-                            ? 'bg-gradient-to-r from-teal-500 to-emerald-500 text-white shadow-lg shadow-teal-200'
-                            : 'text-slate-600 hover:bg-slate-100'
+                            ? 'bg-white border-2 border-teal-500 text-teal-600'
+                            : 'text-slate-600 hover:bg-slate-50 border border-slate-200'
                         }`}
                       >
                         {pageNum}
