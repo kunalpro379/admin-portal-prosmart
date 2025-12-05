@@ -105,18 +105,18 @@ export const AdminSidebar = ({ isOpen, onClose }: AdminSidebarProps) => {
               })}
             </ul>
           </div>
-        </nav>
 
-        {/* Logout Section */}
-        <div className="p-4 border-t border-slate-100 bg-white">
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white border-2 border-rose-500 text-rose-600 hover:bg-rose-50 hover:border-rose-600 transition-all duration-200"
-          >
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium">Log out</span>
-          </button>
-        </div>
+          {/* Logout placed below product list */}
+          <div className="mt-4">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white border-2 border-rose-500 text-rose-600 hover:bg-rose-50 hover:border-rose-600 transition-all duration-200"
+            >
+              <LogOut className="w-5 h-5" />
+              <span className="font-medium">Log out</span>
+            </button>
+          </div>
+        </nav>
       </aside>
     </>
   );
